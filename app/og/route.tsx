@@ -1,8 +1,17 @@
-export const runtime = "edge";
-export const contentType = "image/png";
-export const size = { width: 1200, height: 630 };
+// app/og/route.tsx
 
 import { ImageResponse } from "next/og";
+
+// This export is valid and correct
+export const runtime = "edge";
+
+// This variable is used below, but it cannot be exported.
+// Just declare it as a local const.
+const size = { width: 1200, height: 630 };
+
+// We removed 'export const contentType' because
+// 1. It's not a valid export.
+// 2. ImageResponse sets the content type for you automatically.
 
 export async function GET() {
   return new ImageResponse(
@@ -38,6 +47,7 @@ export async function GET() {
         </div>
       </div>
     ),
+    // Pass the local 'size' variable here
     size
   );
 }
