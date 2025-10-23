@@ -1,53 +1,46 @@
-// app/og/route.tsx
+export const runtime = "edge";
+export const size = { width: 1200, height: 630 }; // valid export
+export const alt = "tonr — The Printr runs on TONR";
 
 import { ImageResponse } from "next/og";
-
-// This export is valid and correct
-export const runtime = "edge";
-
-// This variable is used below, but it cannot be exported.
-// Just declare it as a local const.
-const size = { width: 1200, height: 630 };
-
-// We removed 'export const contentType' because
-// 1. It's not a valid export.
-// 2. ImageResponse sets the content type for you automatically.
 
 export async function GET() {
   return new ImageResponse(
     (
       <div style={{
-        width: "100%", height: "100%", background: "#0a0a0a", color: "white",
+        width: "100%", height: "100%",
+        background: "#0a0a0a", color: "white",
         display: "flex", flexDirection: "column", justifyContent: "space-between",
-        padding: 48, fontFamily: "ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans",
+        padding: 48,
+        fontFamily: "ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans",
       }}>
         <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-          <div style={{ fontSize: 72, fontWeight: 1000, fontStyle: "italic", textTransform: "lowercase" }}>tonr</div>
-          <div style={{ display: "flex", height: 8, width: 180, borderRadius: 4, overflow: "hidden" }}>
-            <div style={{ background: "#22d3ee", flex: 1 }} />
-            <div style={{ background: "#ec4899", flex: 1 }} />
-            <div style={{ background: "#facc15", flex: 1 }} />
-          </div>
+          <div style={{ fontSize: 72, fontWeight: 1000, fontStyle: "italic", textTransform: "uppercase", letterSpacing: 6 }}>TONR</div>
+          {/* continuous CMYK gradient bar */}
+          <div style={{
+            height: 8, width: 220, borderRadius: 0,
+            background: "linear-gradient(90deg,#22d3ee 0%,#ec4899 33%,#facc15 66%,#000 100%)"
+          }} />
         </div>
+
         <div style={{ display: "grid", gap: 12 }}>
-          <div style={{ fontSize: 58, fontWeight: 900, lineHeight: 1.1 }}>The Printr runs on tonr.</div>
-          <div style={{ fontSize: 28, color: "#cbd5e1" }}>The beta ink powering the machine. No TONR, no print.</div>
+          <div style={{ fontSize: 56, fontWeight: 900, lineHeight: 1.1, letterSpacing: 2 }}>THE PRINTR RUNS ON TONR.</div>
+          <div style={{ fontSize: 26, color: "#cbd5e1" }}>The beta ink powering the machine. No TONR, no print.</div>
         </div>
+
         <div>
           <div style={{ display: "flex", gap: 18, alignItems: "center" }}>
-            <div style={{ fontSize: 28, fontWeight: 800 }}>$TONR</div>
+            <div style={{ fontSize: 24, fontWeight: 800 }}>$TONR</div>
             <div style={{ width: 2, height: 24, background: "#334155" }} />
-            <div style={{ fontSize: 20, color: "#94a3b8" }}>tonr.money</div>
+            <div style={{ fontSize: 18, color: "#94a3b8" }}>tonr.money</div>
           </div>
-          <div style={{ display: "flex", width: "100%", height: 6, marginTop: 16 }}>
-            <div style={{ background: "#22d3ee", flex: 1 }} />
-            <div style={{ background: "#ec4899", flex: 1 }} />
-            <div style={{ background: "#facc15", flex: 1 }} />
-          </div>
+          <div style={{
+            display: "flex", width: "100%", height: 6, marginTop: 16,
+            background: "linear-gradient(90deg,#22d3ee 0%,#ec4899 33%,#facc15 66%,#000 100%)"
+          }} />
         </div>
       </div>
     ),
-    // Pass the local 'size' variable here
     size
   );
 }
