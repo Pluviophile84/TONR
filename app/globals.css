@@ -2,4 +2,31 @@
 @tailwind components;
 @tailwind utilities;
 
-html, body { margin: 0; padding: 0; }
+:root {
+  --c: #22d3ee; /* cyan */
+  --m: #ec4899; /* magenta */
+  --y: #facc15; /* yellow */
+  --k: #000000; /* key/black for tail gradient end */
+}
+
+html, body {
+  margin: 0; padding: 0;
+  background: theme('colors.bg');
+  color: theme('colors.fg');
+}
+
+/* blocky vibe everywhere */
+* { border-radius: 0 !important; }
+
+/* gradient separator (CMYK continuous) */
+.cmyk-grad {
+  height: 6px;
+  background: linear-gradient(90deg, var(--c) 0%, var(--m) 33.333%, var(--y) 66.666%, var(--k) 100%);
+}
+
+/* subtle “ink drip” overlay */
+@keyframes drip {
+  0% { transform: translateY(-100%); opacity: 0; }
+  50% { opacity: .5; }
+  100% { transform: translateY(0); opacity: 0; }
+}
