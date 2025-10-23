@@ -1,15 +1,24 @@
 "use client";
-import Image from "next/image";
 import { useMemo, useState, useEffect } from "react";
 
 export default function Home() {
   // copy-to-clipboard tick
   const [copied, setCopied] = useState<string | null>(null);
+  const [mobileOpen, setMobileOpen] = useState(false);
+
   useEffect(() => {
     if (!copied) return;
     const t = setTimeout(() => setCopied(null), 1200);
     return () => clearTimeout(t);
   }, [copied]);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setMobileOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
 
   const TOKEN = {
     name: "tonr",
@@ -29,7 +38,6 @@ export default function Home() {
   const ink = useMemo(() => ({
     panel: "bg-transparent border border-[rgba(255,255,255,0.12)]",
     sub: "text-sub",
-    border: "border border-[rgba(255,255,255,0.12)]",
     btnPri: "bg-white text-black hover:brightness-95 transition",
     btnSec: "border border-white hover:bg-white hover:text-black transition",
   }), []);
@@ -38,10 +46,13 @@ export default function Home() {
     try { await navigator.clipboard.writeText(val); setCopied(val); } catch {}
   };
 
+  // closes mobile menu when navigating via anchors
+  const closeMobile = () => setMobileOpen(false);
+
   return (
     <main className="min-h-screen">
       {/* NAV */}
-      <header className="sticky top-0 z-20 backdrop-blur bg-[rgba(10,10,10,0.7)] border-b border-[rgba(255,255,255,0.12)]">
+      <header className="sticky top-0 z-30 backdrop-blur bg-[rgba(10,10,10,0.7)] border-b border-[rgba(255,255,255,0.12)]">
         <div className="mx-auto max-w-6xl px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-3 select-none">
             <span className="font-heading font-extrabold italic tracking-widest uppercase text-xl sm:text-2xl">
@@ -50,13 +61,48 @@ export default function Home() {
             {/* CMYK gradient bar */}
             <span className="cmyk-grad w-28" />
           </div>
+
+          {/* Desktop nav */}
           <nav className="hidden sm:flex items-center gap-6 text-sm">
             <a href="#why" className="opacity-80 hover:opacity-100">why tonr</a>
             <a href="#beta" className="opacity-80 hover:opacity-100">beta runner</a>
             <a href="#token" className="opacity-80 hover:opacity-100">token</a>
             <a href="#cta" className="opacity-80 hover:opacity-100">get $TONR</a>
           </nav>
+
+          {/* Mobile menu button */}
+          <button
+            aria-label="Open menu"
+            aria-expanded={mobileOpen}
+            aria-controls="mobile-menu"
+            className="sm:hidden px-3 py-2 border border-white text-white"
+            onClick={() => setMobileOpen(v => !v)}
+          >
+            {/* simple boxy hamburger */}
+            <span className="block w-5 h-0.5 bg-white mb-1" />
+            <span className="block w-5 h-0.5 bg-white mb-1" />
+            <span className="block w-5 h-0.5 bg-white" />
+          </button>
         </div>
+
+        {/* Mobile dropdown panel */}
+        {mobileOpen && (
+          <div
+            id="mobile-menu"
+            className="sm:hidden border-t border-[rgba(255,255,255,0.12)] bg-[rgb(10,10,10)]"
+          >
+            <div className="max-w-6xl mx-auto px-4 py-4 grid gap-3">
+              <a href="#why" className="opacity-90 hover:opacity-100" onClick={closeMobile}>why tonr</a>
+              <a href="#beta" className="opacity-90 hover:opacity-100" onClick={closeMobile}>beta runner</a>
+              <a href="#token" className="opacity-90 hover:opacity-100" onClick={closeMobile}>token</a>
+              <a href="#cta" className="opacity-90 hover:opacity-100" onClick={closeMobile}>get $TONR</a>
+              <div className="grid grid-cols-2 gap-3 pt-2">
+                <a href={TOKEN.links.buy} className={`px-4 py-2 font-heading font-bold uppercase ${ink.btnPri}`} onClick={closeMobile}>Buy</a>
+                <a href={TOKEN.links.telegram} className={`px-4 py-2 font-heading font-bold uppercase ${ink.btnSec}`} onClick={closeMobile}>Telegram</a>
+              </div>
+            </div>
+          </div>
+        )}
       </header>
 
       {/* HERO */}
@@ -107,7 +153,7 @@ export default function Home() {
         <div className="mx-auto max-w-6xl px-4 py-14 grid sm:grid-cols-3 gap-6">
           <div>
             <h2 className="font-heading font-black uppercase tracking-widest text-2xl sm:text-3xl mb-1">BETA RUNNER OF PRINTR</h2>
-            <p className={`${ink.sub}`}>TONR is the unofficial-official test cartridge. If TONR leaks, the machine works.</p>
+            <p className={`text-sm ${ink.sub}`}>TONR is the unofficial-official test cartridge. If TONR leaks, the machine works.</p>
           </div>
           <Block title="SHAKE BEFORE APING" body="Beta ink levels fluctuate. The Printer prefers degens who read the manual after." />
           <Block title="NO TONR, NO LAUNCH" body="Printr’s myth starts with ink. TONR greases the rails before the main token drops." />
