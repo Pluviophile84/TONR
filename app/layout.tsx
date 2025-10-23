@@ -1,3 +1,4 @@
+// app/layout.tsx
 import type { Metadata } from "next";
 import "./globals.css";
 import { Rajdhani, Inter_Tight } from "next/font/google";
@@ -11,9 +12,9 @@ export const metadata: Metadata = {
   openGraph: {
     title: "tonr — beta ink for Printr",
     description: "Before the future prints, the printer leaks. $TONR is the beta cartridge of the Printr ecosystem.",
-    images: ["/og.png"], // static fallback; dynamic route also provided
+    images: ["/og"], // use the dynamic OG route (this file)
   },
-  twitter: { card: "summary_large_image", images: ["/og.png"] },
+  twitter: { card: "summary_large_image", images: ["/og"] },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
