@@ -2,31 +2,139 @@
 @tailwind components;
 @tailwind utilities;
 
+/* === Palette & Base ====================================================== */
 :root {
+  --bg-0: #0a0a0a; /* page background (deep) */
+  --bg-1: #0d0d0d; /* section alt 1 */
+  --bg-2: #141414; /* section alt 2 */
+  --panel: #0b0b0b; /* content panels */
+  --border: rgba(255,255,255,0.12);
+  --sub: rgba(255,255,255,0.70);
+
+  /* CMYK (Printr vibe) */
   --c: #22d3ee; /* cyan */
   --m: #ec4899; /* magenta */
   --y: #facc15; /* yellow */
-  --k: #000000; /* key/black for tail gradient end */
+  --k: #000000; /* key/black end for gradient */
 }
 
 html, body {
-  margin: 0; padding: 0;
-  background: theme('colors.bg');
-  color: theme('colors.fg');
+  margin: 0;
+  padding: 0;
+  background: var(--bg-0);
+  color: #fff;
 }
 
-/* blocky vibe everywhere */
+/* Hard edges everywhere */
 * { border-radius: 0 !important; }
 
-/* gradient separator (CMYK continuous) */
+/* Subtle copy text color */
+.text-sub { color: var(--sub); }
+
+/* Section alternates (depth without color) */
+.sec-0 { background: var(--bg-0); }
+.sec-1 { background: var(--bg-1); }
+.sec-2 { background: var(--bg-2); }
+
+.section-border { border-color: var(--border); }
+
+/* Panels (boxy cards) */
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--border);
+}
+
+/* CMYK continuous gradient separator (Printr style) */
 .cmyk-grad {
   height: 6px;
+  width: 100%;
   background: linear-gradient(90deg, var(--c) 0%, var(--m) 33.333%, var(--y) 66.666%, var(--k) 100%);
 }
 
-/* subtle “ink drip” overlay */
+/* === Ink Drip ambient ==================================================== */
 @keyframes drip {
   0% { transform: translateY(-100%); opacity: 0; }
   50% { opacity: .5; }
   100% { transform: translateY(0); opacity: 0; }
 }
+
+/* === Printr-style CMYK Animated Border Buttons =========================== */
+/* Structure:
+   - Base element is relative, squared, with bold uppercase font
+   - ::before draws the animated gradient border (hollow center via mask)
+   - ::after is the fill gradient, hidden until hover
+*/
+@keyframes cmykMove {
+  to { background-position: 300% 0; }
+}
+
+.btn-cmyk {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 18px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: #fff;
+  background: transparent;
+  border: 1px solid transparent; /* visual spacing for ::before mask */
+  transition: color .2s linear, background .2s linear;
+  isolation: isolate; /* keep pseudo-element layers scoped */
+}
+
+.btn-cmyk::before,
+.btn-cmyk::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+/* Animated CMYK border (hollow center via masks) */
+.btn-cmyk::before {
+  padding: 1px; /* border thickness */
+  background: linear-gradient(90deg, var(--c), var(--m), var(--y), var(--c));
+  background-size: 300% 100%;
+  animation: cmykMove 6s linear infinite;
+  /* Create a hollow center so only the border shows */
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}
+
+/* Fill layer (revealed on hover) */
+.btn-cmyk::after {
+  background: linear-gradient(90deg, var(--c) 0%, var(--m) 33%, var(--y) 66%, #fff 100%);
+  opacity: 0;
+  transition: opacity .22s linear;
+  z-index: -1; /* keep text above */
+}
+
+.btn-cmyk:hover {
+  color: #000;
+}
+.btn-cmyk:hover::after {
+  opacity: 1;
+}
+
+/* Secondary “ghost” button that keeps CMYK border but never fills */
+.btn-cmyk-ghost {
+  @apply btn-cmyk;
+}
+.btn-cmyk-ghost:hover {
+  color: #fff; /* keep white text */
+}
+.btn-cmyk-ghost:hover::after {
+  opacity: 0; /* no fill on hover for ghost */
+}
+
+/* Small/tiny variants for mobile panel actions */
+.btn-sm { padding: 10px 14px; font-weight: 800; }
+.btn-xs { padding: 8px 10px; font-weight: 700; }
+
+/* NAV hamburger bars */
+.hmb { width: 20px; height: 2px; background: #fff; display: block; }
